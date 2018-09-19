@@ -32,6 +32,7 @@ class Document extends React.Component {
 			app,
 			chunkFiles,
 			commitSha,
+			buildTimestamp,
 			faviconURL,
 			head,
 			i18nLocaleScript,
@@ -65,6 +66,7 @@ class Document extends React.Component {
 
 		const inlineScript =
 			`COMMIT_SHA = ${ jsonStringifyForHtml( commitSha ) };\n` +
+			`BUILD_TIMESTAMP = ${ jsonStringifyForHtml( buildTimestamp ) };\n` +
 			( user ? `var currentUser = ${ jsonStringifyForHtml( user ) };\n` : '' ) +
 			( app ? `var app = ${ jsonStringifyForHtml( app ) };\n` : '' ) +
 			( initialReduxState

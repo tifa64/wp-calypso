@@ -28,6 +28,7 @@ const bundleEnv = config( 'env' );
 const isDevelopment = bundleEnv === 'development';
 
 const commitSha = process.env.hasOwnProperty( 'COMMIT_SHA' ) ? process.env.COMMIT_SHA : '(unknown)';
+const buildTimestamp = new Date().toISOString();
 
 /**
  * This lists modules that must use commonJS `require()`s
@@ -166,6 +167,7 @@ const webpackConfig = {
 			PROJECT_NAME: JSON.stringify( config( 'project' ) ),
 			COMMIT_SHA: JSON.stringify( commitSha ),
 			'process.env.NODE_ENV': JSON.stringify( bundleEnv ),
+			BUILD_TIMESTAMP: JSON.stringify( buildTimestamp ),
 		} ),
 		new webpack.NormalModuleReplacementPlugin( /^lib[\/\\]abtest$/, 'lodash/noop' ), // Depends on BOM
 		new webpack.NormalModuleReplacementPlugin( /^lib[\/\\]analytics$/, 'lodash/noop' ), // Depends on BOM
