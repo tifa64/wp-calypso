@@ -214,8 +214,20 @@ class StatModuleChartTabs extends Component {
 		} );
 	}
 
+	renderQueries() {
+		const { fullQuery, quickQuery, siteId } = this.props;
+		return (
+			siteId && (
+				<>
+					<QuerySiteStats statType="statsVisits" siteId={ siteId } query={ quickQuery } />
+					<QuerySiteStats statType="statsVisits" siteId={ siteId } query={ fullQuery } />
+				</>
+			)
+		);
+	}
+
 	render() {
-		const { data, fullQuery, isActiveTabLoading, quickQuery, siteId } = this.props;
+		const { isActiveTabLoading, siteId, quickQuery, fullQuery } = this.props;
 		const activeTab = this.getActiveTab();
 		let availableCharts = [];
 		const classes = [ 'stats-module', 'is-chart-tabs', { 'is-loading': isActiveTabLoading } ];
@@ -247,7 +259,7 @@ class StatModuleChartTabs extends Component {
 						loading={ isActiveTabLoading }
 					/>
 					<StatTabs
-						data={ data }
+						data={ this.props.data }
 						tabs={ this.props.charts }
 						switchTab={ this.props.switchTab }
 						selectedTab={ this.props.chartTab }
