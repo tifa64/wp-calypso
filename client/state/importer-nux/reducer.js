@@ -28,7 +28,7 @@ export const siteDetails = createReducer(
 			siteTitle: response.site_title,
 			siteUrl: response.site_url,
 		} ),
-		[ IMPORT_IS_SITE_IMPORTABLE_ERROR ]: () => ( {} ),
+		[ IMPORT_IS_SITE_IMPORTABLE_ERROR ]: () => null,
 	}
 );
 
