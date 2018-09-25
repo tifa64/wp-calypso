@@ -1,3 +1,5 @@
+/** @format */
+
 @import './variables.scss';
 
 .wp-block-a8c-tiled-gallery.components-placeholder {
@@ -18,7 +20,6 @@
 
 .wp-block-a8c-tiled-gallery {
 	.blocks-gallery-item {
-
 		// Hide the focus outline that otherwise briefly appears when selecting a block.
 		figure:not( .is-selected ):focus {
 			outline: none;
@@ -47,7 +48,7 @@
 
 		.is-selected .editor-rich-text {
 			// IE calculates this incorrectly, so leave it to modern browsers.
-			@supports (position: sticky) {
+			@supports ( position: sticky ) {
 				right: 0;
 				left: 0;
 				margin-top: -4px;
@@ -112,7 +113,7 @@
 		right: -2px;
 		background-color: $blue-dark;
 		display: inline-flex;
-		z-index: z-index( '.block-library-gallery-item__inline-menu' );
+		// z-index: z-index( '.block-library-gallery-item__inline-menu' );
 
 		.components-button {
 			color: $white;
