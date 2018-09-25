@@ -1,3 +1,5 @@
+/** @format */
+
 /**
  * External Dependencies
  */
@@ -87,7 +89,7 @@ class GalleryEdit extends Component {
 
 	onSelectImages( images ) {
 		this.props.setAttributes( {
-			images: images.map( ( image ) => pick( image, [ 'alt', 'caption', 'id', 'link', 'url' ] ) ),
+			images: images.map( image => pick( image, [ 'alt', 'caption', 'id', 'link', 'url' ] ) ),
 		} );
 	}
 
@@ -108,7 +110,10 @@ class GalleryEdit extends Component {
 	}
 
 	setImageAttributes( index, attributes ) {
-		const { attributes: { images }, setAttributes } = this.props;
+		const {
+			attributes: { images },
+			setAttributes,
+		} = this.props;
 		if ( ! images[ index ] ) {
 			return;
 		}
@@ -134,7 +139,7 @@ class GalleryEdit extends Component {
 		mediaUpload( {
 			allowedType: 'image',
 			filesList: files,
-			onFileChange: ( images ) => {
+			onFileChange: images => {
 				setAttributes( {
 					images: currentImages.concat( images ),
 				} );
@@ -156,13 +161,15 @@ class GalleryEdit extends Component {
 
 	render() {
 		const { attributes, isSelected, className, noticeOperations, noticeUI } = this.props;
-		const { images, columns = defaultColumnsNumber( attributes ), align, imageCrop, linkTo } = attributes;
+		const {
+			images,
+			columns = defaultColumnsNumber( attributes ),
+			align,
+			imageCrop,
+			linkTo,
+		} = attributes;
 
-		const dropZone = (
-			<DropZone
-				onFilesDrop={ this.addFiles }
-			/>
-		);
+		const dropZone = <DropZone onFilesDrop={ this.addFiles } />;
 
 		const controls = (
 			<BlockControls>
@@ -173,7 +180,7 @@ class GalleryEdit extends Component {
 							type="image"
 							multiple
 							gallery
-							value={ images.map( ( img ) => img.id ) }
+							value={ images.map( img => img.id ) }
 							render={ ( { open } ) => (
 								<IconButton
 									className="components-toolbar__control"
@@ -215,13 +222,15 @@ class GalleryEdit extends Component {
 				{ controls }
 				<InspectorControls>
 					<PanelBody title={ __( 'Gallery Settings' ) }>
-						{ images.length > 1 && <RangeControl
-							label={ __( 'Columns' ) }
-							value={ columns }
-							onChange={ this.setColumnsNumber }
-							min={ 1 }
-							max={ Math.min( MAX_COLUMNS, images.length ) }
-						/> }
+						{ images.length > 1 && (
+							<RangeControl
+								label={ __( 'Columns' ) }
+								value={ columns }
+								onChange={ this.setColumnsNumber }
+								min={ 1 }
+								max={ Math.min( MAX_COLUMNS, images.length ) }
+							/>
+						) }
 						<ToggleControl
 							label={ __( 'Crop Images' ) }
 							checked={ !! imageCrop }
@@ -237,7 +246,11 @@ class GalleryEdit extends Component {
 					</PanelBody>
 				</InspectorControls>
 				{ noticeUI }
-				<ul className={ `${ className } align${ align } columns-${ columns } ${ imageCrop ? 'is-cropped' : '' }` }>
+				<ul
+					className={ `${ className } align${ align } columns-${ columns } ${
+						imageCrop ? 'is-cropped' : ''
+					}` }
+				>
 					{ dropZone }
 					{ images.map( ( img, index ) => {
 						return (
@@ -249,13 +262,13 @@ class GalleryEdit extends Component {
 									isSelected={ isSelected && this.state.selectedImage === index }
 									onRemove={ this.onRemoveImage( index ) }
 									onSelect={ this.onSelectImage( index ) }
-									setAttributes={ ( attrs ) => this.setImageAttributes( index, attrs ) }
+									setAttributes={ attrs => this.setImageAttributes( index, attrs ) }
 									caption={ img.caption }
 								/>
 							</li>
 						);
 					} ) }
-					{ isSelected &&
+					{ isSelected && (
 						<li className="blocks-gallery-item has-add-item-button">
 							<FormFileUpload
 								multiple
@@ -268,7 +281,7 @@ class GalleryEdit extends Component {
 								{ __( 'Upload an image' ) }
 							</FormFileUpload>
 						</li>
-					}
+					) }
 				</ul>
 			</Fragment>
 		);

@@ -1,3 +1,5 @@
+/** @format */
+
 @import './variables.scss';
 
 .wp-block-a8c-tiled-gallery {
@@ -23,7 +25,7 @@
 			height: 100%;
 
 			// IE doesn't support flex so omit that.
-			@supports (position: sticky) {
+			@supports ( position: sticky ) {
 				display: flex;
 				align-items: flex-end;
 				justify-content: flex-start;
@@ -41,7 +43,7 @@
 			width: 100%;
 
 			// IE11 doesn't read rules inside this query. They are applied only to modern browsers.
-			@supports (position: sticky) {
+			@supports ( position: sticky ) {
 				width: auto;
 			}
 		}
@@ -56,7 +58,12 @@
 			color: $white;
 			text-align: center;
 			font-size: $root-font-size;
-			background: linear-gradient( 0deg, rgba( $color: #000, $alpha: 0.7 ) 0, rgba( $color: #000, $alpha: 0.3 ) 60%, transparent );
+			background: linear-gradient(
+				0deg,
+				rgba( $color: #000, $alpha: 0.7 ) 0,
+				rgba( $color: #000, $alpha: 0.3 ) 60%,
+				transparent
+			);
 
 			img {
 				display: inline;
@@ -74,7 +81,7 @@
 			width: 100%;
 
 			// IE11 doesn't read rules inside this query. They are applied only to modern browsers.
-			@supports (position: sticky) {
+			@supports ( position: sticky ) {
 				height: 100%;
 				flex: 1;
 				object-fit: cover;
@@ -97,7 +104,7 @@
 		@for $i from 3 through 8 {
 			&.columns-#{ $i } .blocks-gallery-image,
 			&.columns-#{ $i } .blocks-gallery-item {
-				width: calc( 100% / #{ $i } - 16px );
+				width: calc( 100% / #{$i} - 16px );
 			}
 		}
 	}
@@ -115,7 +122,9 @@
 	[data-align='right'] &,
 	&.alignleft,
 	&.alignright {
-		max-width: ( 610px / 2 ); // $content-width: 610px; // For the visual width, subtract 30px (2 * $block-padding + 2px borders). This comes to 580px, which is optimized for 70 characters.
+		max-width: (
+			610px / 2
+		); // $content-width: 610px; // For the visual width, subtract 30px (2 * $block-padding + 2px borders). This comes to 580px, which is optimized for 70 characters.
 		width: 100%;
 	}
 }

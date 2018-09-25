@@ -1,3 +1,5 @@
+/** @format */
+
 /**
  * External Dependencies
  */
@@ -58,7 +60,8 @@ class GalleryImage extends Component {
 	onKeyDown( event ) {
 		if (
 			this.container === document.activeElement &&
-			this.props.isSelected && [ BACKSPACE, DELETE ].indexOf( event.keyCode ) !== -1
+			this.props.isSelected &&
+			[ BACKSPACE, DELETE ].indexOf( event.keyCode ) !== -1
 		) {
 			event.stopPropagation();
 			event.preventDefault();
@@ -99,10 +102,14 @@ class GalleryImage extends Component {
 				break;
 		}
 
-		// Disable reason: Image itself is not meant to be
-		// interactive, but should direct image selection and unfocus caption fields
-		// eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events
-		const img = url ? <img src={ url } alt={ alt } data-id={ id } onClick={ this.onImageClick } /> : <Spinner />;
+		const img = url ? (
+			// Disable reason: Image itself is not meant to be
+			// interactive, but should direct image selection and unfocus caption fields
+			// eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events
+			<img src={ url } alt={ alt } data-id={ id } onClick={ this.onImageClick } />
+		) : (
+			<Spinner />
+		);
 
 		const className = classnames( {
 			'is-selected': isSelected,
@@ -112,8 +119,13 @@ class GalleryImage extends Component {
 		// Disable reason: Each block can be selected by clicking on it and we should keep the same saved markup
 		/* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/onclick-has-role, jsx-a11y/click-events-have-key-events */
 		return (
-			<figure className={ className } tabIndex="-1" onKeyDown={ this.onKeyDown } ref={ this.bindContainer }>
-				{ isSelected &&
+			<figure
+				className={ className }
+				tabIndex="-1"
+				onKeyDown={ this.onKeyDown }
+				ref={ this.bindContainer }
+			>
+				{ isSelected && (
 					<div className="block-library-gallery-item__inline-menu">
 						<IconButton
 							icon="no-alt"
@@ -122,7 +134,7 @@ class GalleryImage extends Component {
 							label={ __( 'Remove Image' ) }
 						/>
 					</div>
-				}
+				) }
 				{ href ? <a href={ href }>{ img }</a> : img }
 				{ ( caption && caption.length > 0 ) || isSelected ? (
 					<RichText
@@ -130,7 +142,7 @@ class GalleryImage extends Component {
 						placeholder={ __( 'Write caption…' ) }
 						value={ caption }
 						isSelected={ this.state.captionSelected }
-						onChange={ ( newCaption ) => setAttributes( { caption: newCaption } ) }
+						onChange={ newCaption => setAttributes( { caption: newCaption } ) }
 						unstableOnFocus={ this.onSelectCaption }
 						inlineToolbar
 					/>
