@@ -4,10 +4,6 @@
  * External Dependencies
  */
 import classnames from 'classnames';
-
-/**
- * WordPress Dependencies
- */
 import { Component } from '@wordpress/element';
 import { IconButton, Spinner } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';

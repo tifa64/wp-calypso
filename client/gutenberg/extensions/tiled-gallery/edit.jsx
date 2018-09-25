@@ -5,10 +5,6 @@
  */
 import pick from 'lodash/pick';
 import filter from 'lodash/filter';
-
-/**
- * WordPress dependencies
- */
 import { Component, Fragment } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import {
