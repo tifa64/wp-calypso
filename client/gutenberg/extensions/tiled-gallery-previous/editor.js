@@ -12,10 +12,10 @@ import { createBlock, registerBlockType } from '@wordpress/blocks';
 import TiledGalleryEdit from './edit.jsx';
 import TiledGallerySave from './save.jsx';
 
-const blockType = 'a8c/tiled-gallery';
+const blockType = 'a8c/tiled-gallery-previous';
 
 const blockSettings = {
-	title: __( 'Tiled Gallery' ),
+	title: __( 'Tiled Gallery (previous)' ),
 	description: __( 'Display multiple images in an elegantly organized tiled layout.' ),
 	icon: 'format-gallery',
 	category: 'jetpack',
