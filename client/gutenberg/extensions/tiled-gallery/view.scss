@@ -1,3 +1,5 @@
+@import './variables.scss';
+
 .wp-block-a8c-tiled-gallery {
 	display: flex;
 	flex-wrap: wrap;
@@ -5,11 +7,11 @@
 	padding: 0;
 
 	// Allow gallery items to go edge to edge.
-	margin: 0 -8px 0 -8px;
+	margin: 0 -$tiled-gallery-margin 0 -$tiled-gallery-margin;
 
 	.blocks-gallery-image,
 	.blocks-gallery-item {
-		margin: 8px;
+		margin: $tiled-gallery-margin;
 		display: flex;
 		flex-grow: 1;
 		flex-direction: column;

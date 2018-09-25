@@ -1,11 +1,13 @@
+@import './variables.scss';
+
 .wp-block-a8c-tiled-gallery.components-placeholder {
 	margin: 0;
 }
 
 // Allow gallery items to go edge to edge.
 .gutenberg .wp-block-a8c-tiled-gallery:not( .components-placeholder ) {
-	margin-left: -8px;
-	margin-right: -8px;
+	margin-left: -$tiled-gallery-margin;
+	margin-right: -$tiled-gallery-margin;
 }
 
 // Don't use negative margins when full-wide.
