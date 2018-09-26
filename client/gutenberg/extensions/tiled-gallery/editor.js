@@ -10,10 +10,8 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import classnames from 'classnames';
 import { registerBlockType } from '@wordpress/blocks';
 // import { createBlock, registerBlockType } from '@wordpress/blocks';
-import { RichText } from '@wordpress/editor';
 // import { RichText, mediaUpload } from '@wordpress/editor';
 // import { createBlobURL } from '@wordpress/blob';
 
@@ -21,7 +19,9 @@ import { RichText } from '@wordpress/editor';
  * Internal dependencies
  */
 import './editor.scss';
-import { default as edit, defaultColumnsNumber } from './edit';
+import { DEFAULT_GALLERY_LAYOUT } from './constants';
+import { default as edit } from './edit';
+import { default as save } from './save';
 
 const blockAttributes = {
 	images: {
@@ -60,6 +60,7 @@ const blockAttributes = {
 	},
 	columns: {
 		type: 'number',
+		default: 3,
 	},
 	imageCrop: {
 		type: 'boolean',
@@ -67,7 +68,7 @@ const blockAttributes = {
 	},
 	layout: {
 		type: 'string',
-		default: 'rectangular',
+		default: DEFAULT_GALLERY_LAYOUT,
 	},
 	linkTo: {
 		type: 'string',
@@ -170,54 +171,7 @@ const blockSettings = {
 	*/
 
 	edit,
-
-	save( { attributes, className } ) {
-		const { images, columns = defaultColumnsNumber( attributes ), imageCrop, linkTo } = attributes;
-		return (
-			<ul
-				className={ classnames( className, `columns-${ columns }`, {
-					'is-cropped': imageCrop,
-				} ) }
-			>
-				{ images.map( image => {
-					let href;
-
-					switch ( linkTo ) {
-						case 'media':
-							href = image.url;
-							break;
-						case 'attachment':
-							href = image.link;
-							break;
-					}
-
-					const img = (
-						<img
-							src={ image.url }
-							alt={ image.alt }
-							data-id={ image.id }
-							data-link={ image.link }
-							className={ classnames( {
-								[ `wp-image-${ image.id }` ]: image.id,
-							} ) }
-						/>
-					);
-
-					return (
-						<li key={ image.id || image.url } className={ `${ className }__item` }>
-							<figure>
-								{ href ? <a href={ href }>{ img }</a> : img }
-								{ image.caption &&
-									image.caption.length > 0 && (
-										<RichText.Content tagName="figcaption" value={ image.caption } />
-									) }
-							</figure>
-						</li>
-					);
-				} ) }
-			</ul>
-		);
-	},
+	save,
 };
 
 registerBlockType( blockName, blockSettings );

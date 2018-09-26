@@ -70,6 +70,12 @@
 		}
 	}
 
+	// @TODO `.has-add-item-button` belongs to editor side
+	&.layout-circle .wp-block-a8c-tiled-gallery__item:not( .has-add-item-button ) {
+		border-radius: 50%;
+		overflow: hidden;
+	}
+
 	// Cropped
 	&.is-cropped .wp-block-a8c-tiled-gallery__item {
 		a,

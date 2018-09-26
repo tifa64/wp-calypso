@@ -31,18 +31,12 @@ import {
 /**
  * Internal dependencies
  */
+import { DEFAULT_GALLERY_LAYOUT, MAX_COLUMNS, DEFAULT_COLUMNS } from './constants';
 import GalleryImage from './gallery-image';
 import LayoutStyles from './layout-styles';
 
-const MAX_COLUMNS = 8;
-const linkOptions = [
-	{ value: 'attachment', label: __( 'Attachment Page' ) },
-	{ value: 'media', label: __( 'Media File' ) },
-	{ value: 'none', label: __( 'None' ) },
-];
-
 export function defaultColumnsNumber( attributes ) {
-	return Math.min( 3, attributes.images.length );
+	return Math.min( DEFAULT_COLUMNS, attributes.images.length );
 }
 
 class TiledGalleryEdit extends Component {
@@ -229,14 +223,14 @@ class TiledGalleryEdit extends Component {
 					<PanelBody title={ __( 'Gallery Settings' ) }>
 						<RadioControl
 							label="Layout"
-							selected={ layout }
+							selected={ layout || DEFAULT_GALLERY_LAYOUT }
 							options={ [
 								{
-									label: _x( 'Tiled Mosaic', 'Tiled gallery layout' ),
+									label: _x( 'Tiled mosaic', 'Tiled gallery layout' ),
 									value: 'rectangular',
 								},
 								{
-									label: _x( 'Square Tiles', 'Tiled gallery layout' ),
+									label: _x( 'Square tiles', 'Tiled gallery layout' ),
 									value: 'square',
 								},
 								{
@@ -244,7 +238,7 @@ class TiledGalleryEdit extends Component {
 									value: 'circle',
 								},
 								{
-									label: _x( 'Tiled Columns', 'Tiled gallery layout' ),
+									label: _x( 'Tiled columns', 'Tiled gallery layout' ),
 									value: 'columns',
 								},
 							] }
@@ -271,7 +265,11 @@ class TiledGalleryEdit extends Component {
 							label={ __( 'Link To' ) }
 							value={ linkTo }
 							onChange={ this.setLinkTo }
-							options={ linkOptions }
+							options={ [
+								{ value: 'attachment', label: __( 'Attachment Page' ) },
+								{ value: 'media', label: __( 'Media File' ) },
+								{ value: 'none', label: __( 'None' ) },
+							] }
 						/>
 					</PanelBody>
 				</InspectorControls>
@@ -279,12 +277,11 @@ class TiledGalleryEdit extends Component {
 				<LayoutStyles
 					layout={ layout }
 					columns={ columns }
-					margin="2"
 					images={ images }
 					className={ className }
 				/>
 				<ul
-					className={ classnames( className, {
+					className={ classnames( className, `layout-${ layout }`, {
 						'is-cropped': imageCrop,
 						[ `align${ align }` ]: align,
 						[ `columns-${ columns }` ]: columns,

@@ -9,11 +9,12 @@ import { select } from '@wordpress/data';
 /**
  * Internal dependencies
  */
+import { TILE_MARGIN } from './constants';
 import { rectangularLayout, squareLayout, circleLayout, columnsLayout } from './layouts';
 
 class LayoutStyles extends Component {
 	render() {
-		const { className, columns, images, layout, margin } = this.props;
+		const { className, columns, images, layout } = this.props;
 
 		if ( ! images.length ) {
 			return null;
@@ -25,14 +26,11 @@ class LayoutStyles extends Component {
 			columns,
 			maxWidth: editorSettings.maxWidth,
 			images,
-			margin,
+			margin: TILE_MARGIN,
 		};
 		let rows = [];
 
 		switch ( layout ) {
-			case 'rectangular':
-				rows = rectangularLayout( layoutOptions );
-				break;
 			case 'square':
 				rows = squareLayout( layoutOptions );
 				break;
@@ -41,11 +39,16 @@ class LayoutStyles extends Component {
 				break;
 			case 'columns':
 				rows = columnsLayout( layoutOptions );
+				break;
+			case 'rectangular':
+			default:
+				rows = rectangularLayout( layoutOptions );
 		}
 
 		let styles = '';
 		let nth = 0;
 
+		// @TODO get rid of "rows"
 		rows.forEach( row => {
 			styles += row.images
 				.map( image => {
