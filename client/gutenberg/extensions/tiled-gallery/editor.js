@@ -10,15 +10,17 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
+import classnames from 'classnames';
 import { registerBlockType } from '@wordpress/blocks';
 // import { createBlock, registerBlockType } from '@wordpress/blocks';
 import { RichText } from '@wordpress/editor';
 // import { RichText, mediaUpload } from '@wordpress/editor';
-//import { createBlobURL } from '@wordpress/blob';
+// import { createBlobURL } from '@wordpress/blob';
 
 /**
  * Internal dependencies
  */
+import './editor.scss';
 import { default as edit, defaultColumnsNumber } from './edit';
 
 const blockAttributes = {
@@ -26,7 +28,7 @@ const blockAttributes = {
 		type: 'array',
 		default: [],
 		source: 'query',
-		selector: 'ul.wp-block-a8c-tiled-gallery .blocks-gallery-item',
+		selector: 'ul.wp-block-a8c-tiled-gallery .wp-block-a8c-tiled-gallery__item',
 		query: {
 			url: {
 				source: 'attribute',
@@ -62,6 +64,10 @@ const blockAttributes = {
 	imageCrop: {
 		type: 'boolean',
 		default: true,
+	},
+	layout: {
+		type: 'string',
+		default: 'squares',
 	},
 	linkTo: {
 		type: 'string',
@@ -165,10 +171,14 @@ const blockSettings = {
 
 	edit,
 
-	save( { attributes } ) {
+	save( { attributes, className } ) {
 		const { images, columns = defaultColumnsNumber( attributes ), imageCrop, linkTo } = attributes;
 		return (
-			<ul className={ `columns-${ columns } ${ imageCrop ? 'is-cropped' : '' }` }>
+			<ul
+				className={ classnames( className, `columns-${ columns }`, {
+					'is-cropped': imageCrop,
+				} ) }
+			>
 				{ images.map( image => {
 					let href;
 
@@ -187,12 +197,14 @@ const blockSettings = {
 							alt={ image.alt }
 							data-id={ image.id }
 							data-link={ image.link }
-							className={ image.id ? `wp-image-${ image.id }` : null }
+							className={ classnames( {
+								[ `wp-image-${ image.id }` ]: image.id,
+							} ) }
 						/>
 					);
 
 					return (
-						<li key={ image.id || image.url } className="blocks-gallery-item">
+						<li key={ image.id || image.url } className={ `${ className }__item` }>
 							<figure>
 								{ href ? <a href={ href }>{ img }</a> : img }
 								{ image.caption &&

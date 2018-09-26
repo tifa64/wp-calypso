@@ -3,15 +3,17 @@
 /**
  * External Dependencies
  */
-import pick from 'lodash/pick';
+import classnames from 'classnames';
 import filter from 'lodash/filter';
+import pick from 'lodash/pick';
 import { Component, Fragment } from '@wordpress/element';
-import { __ } from '@wordpress/i18n';
+import { _x, __ } from '@wordpress/i18n';
 import {
-	IconButton,
 	DropZone,
 	FormFileUpload,
+	IconButton,
 	PanelBody,
+	RadioControl,
 	RangeControl,
 	SelectControl,
 	ToggleControl,
@@ -20,16 +22,17 @@ import {
 } from '@wordpress/components';
 import {
 	BlockControls,
-	MediaUpload,
-	MediaPlaceholder,
 	InspectorControls,
+	MediaPlaceholder,
 	mediaUpload,
+	MediaUpload,
 } from '@wordpress/editor';
 
 /**
  * Internal dependencies
  */
 import GalleryImage from './gallery-image';
+import LayoutStyles from './layout-styles';
 
 const MAX_COLUMNS = 8;
 const linkOptions = [
@@ -42,12 +45,13 @@ export function defaultColumnsNumber( attributes ) {
 	return Math.min( 3, attributes.images.length );
 }
 
-class GalleryEdit extends Component {
+class TiledGalleryEdit extends Component {
 	constructor() {
 		super( ...arguments );
 
 		this.onSelectImage = this.onSelectImage.bind( this );
 		this.onSelectImages = this.onSelectImages.bind( this );
+		this.setLayout = this.setLayout.bind( this );
 		this.setLinkTo = this.setLinkTo.bind( this );
 		this.setColumnsNumber = this.setColumnsNumber.bind( this );
 		this.toggleImageCrop = this.toggleImageCrop.bind( this );
@@ -87,6 +91,10 @@ class GalleryEdit extends Component {
 		this.props.setAttributes( {
 			images: images.map( image => pick( image, [ 'alt', 'caption', 'id', 'link', 'url' ] ) ),
 		} );
+	}
+
+	setLayout( value ) {
+		this.props.setAttributes( { layout: value } );
 	}
 
 	setLinkTo( value ) {
@@ -162,6 +170,7 @@ class GalleryEdit extends Component {
 			columns = defaultColumnsNumber( attributes ),
 			align,
 			imageCrop,
+			layout,
 			linkTo,
 		} = attributes;
 
@@ -218,6 +227,18 @@ class GalleryEdit extends Component {
 				{ controls }
 				<InspectorControls>
 					<PanelBody title={ __( 'Gallery Settings' ) }>
+						<RadioControl
+							label="Layout"
+							selected={ layout }
+							options={ [
+								{ label: _x( 'Masonry', 'Tiled gallery layout' ), value: 'masonry' },
+								{ label: _x( 'Squares', 'Tiled gallery layout' ), value: 'squares' },
+								{ label: _x( 'Circles', 'Tiled gallery layout' ), value: 'circles' },
+							] }
+							onChange={ option => {
+								this.setLayout( option );
+							} }
+						/>
 						{ images.length > 1 && (
 							<RangeControl
 								label={ __( 'Columns' ) }
@@ -242,15 +263,27 @@ class GalleryEdit extends Component {
 					</PanelBody>
 				</InspectorControls>
 				{ noticeUI }
+				<LayoutStyles
+					layout={ layout }
+					columns={ columns }
+					margin="2"
+					images={ images }
+					className={ className }
+				/>
 				<ul
-					className={ `${ className } align${ align } columns-${ columns } ${
-						imageCrop ? 'is-cropped' : ''
-					}` }
+					className={ classnames( className, {
+						'is-cropped': imageCrop,
+						[ `align${ align }` ]: align,
+						[ `columns-${ columns }` ]: columns,
+					} ) }
 				>
 					{ dropZone }
 					{ images.map( ( img, index ) => {
 						return (
-							<li className="blocks-gallery-item" key={ img.id || img.url }>
+							<li
+								className={ `${ className }__item ${ className }__item-${ index }` }
+								key={ img.id || img.url }
+							>
 								<GalleryImage
 									url={ img.url }
 									alt={ img.alt }
@@ -265,7 +298,7 @@ class GalleryEdit extends Component {
 						);
 					} ) }
 					{ isSelected && (
-						<li className="blocks-gallery-item has-add-item-button">
+						<li className={ `${ className }__item has-add-item-button` }>
 							<FormFileUpload
 								multiple
 								isLarge
@@ -284,4 +317,4 @@ class GalleryEdit extends Component {
 	}
 }
 
-export default withNotices( GalleryEdit );
+export default withNotices( TiledGalleryEdit );

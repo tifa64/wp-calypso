@@ -6,32 +6,36 @@
 	margin: 0;
 }
 
-// Allow gallery items to go edge to edge.
-.gutenberg .wp-block-a8c-tiled-gallery:not( .components-placeholder ) {
-	margin-left: -$tiled-gallery-margin;
-	margin-right: -$tiled-gallery-margin;
-}
+.gutenberg {
+	// Allow gallery items to go edge to edge.
+	.wp-block-a8c-tiled-gallery:not( .components-placeholder ) {
+		margin-left: -$tiled-gallery-margin;
+		margin-right: -$tiled-gallery-margin;
+	}
 
-// Don't use negative margins when full-wide.
-.gutenberg [data-align='full'] .wp-block-a8c-tiled-gallery:not( .components-placeholder ) {
-	margin-left: auto;
-	margin-right: auto;
+	// Don't use negative margins when full-wide.
+	[data-align='full'] .wp-block-a8c-tiled-gallery:not( .components-placeholder ) {
+		margin-left: auto;
+		margin-right: auto;
+	}
 }
 
 .wp-block-a8c-tiled-gallery {
-	.blocks-gallery-item {
+	.wp-block-a8c-tiled-gallery__item {
 		// Hide the focus outline that otherwise briefly appears when selecting a block.
 		figure:not( .is-selected ):focus {
 			outline: none;
 		}
 
 		.is-selected {
-			outline: 4px solid $blue-dark;
+			outline: 4px solid $tiled-gallery-selection;
 		}
 
+		/*
 		&.is-transient img {
 			@include loading_fade;
 		}
+		*/
 
 		.editor-rich-text {
 			position: absolute;
@@ -86,7 +90,7 @@
 
 			&:hover,
 			&:focus {
-				border: $border-width solid $dark-gray-500;
+				border: $tiled-gallery-add-item-border-width solid $tiled-gallery-add-item-border-color;
 			}
 		}
 
@@ -111,7 +115,7 @@
 		position: absolute;
 		top: -2px;
 		right: -2px;
-		background-color: $blue-dark;
+		background-color: $tiled-gallery-selection;
 		display: inline-flex;
 		// z-index: z-index( '.block-library-gallery-item__inline-menu' );
 

@@ -11,8 +11,7 @@
 	// Allow gallery items to go edge to edge.
 	margin: 0 -$tiled-gallery-margin 0 -$tiled-gallery-margin;
 
-	.blocks-gallery-image,
-	.blocks-gallery-item {
+	.wp-block-a8c-tiled-gallery__item {
 		margin: $tiled-gallery-margin;
 		display: flex;
 		flex-grow: 1;
@@ -60,8 +59,8 @@
 			font-size: $root-font-size;
 			background: linear-gradient(
 				0deg,
-				rgba( $color: #000, $alpha: 0.7 ) 0,
-				rgba( $color: #000, $alpha: 0.3 ) 60%,
+				rgba( $color: $tiled-gallery-caption-background-color, $alpha: 0.7 ) 0,
+				rgba( $color: $tiled-gallery-caption-background-color, $alpha: 0.3 ) 60%,
 				transparent
 			);
 
@@ -72,8 +71,7 @@
 	}
 
 	// Cropped
-	&.is-cropped .blocks-gallery-image,
-	&.is-cropped .blocks-gallery-item {
+	&.is-cropped .wp-block-a8c-tiled-gallery__item {
 		a,
 		img {
 			// IE11 doesn't support object-fit, so just make sure images aren't skewed.
@@ -89,42 +87,12 @@
 		}
 	}
 
-	// Responsive fallback value, 2 columns
-	& .blocks-gallery-image,
-	& .blocks-gallery-item {
-		width: calc( 100% / 2 - 16px );
-	}
-
-	&.columns-1 .blocks-gallery-image,
-	&.columns-1 .blocks-gallery-item {
-		width: calc( 100% / 1 - 16px );
-	}
-
-	@media ( min-width: 600px ) {
-		@for $i from 3 through 8 {
-			&.columns-#{ $i } .blocks-gallery-image,
-			&.columns-#{ $i } .blocks-gallery-item {
-				width: calc( 100% / #{$i} - 16px );
-			}
-		}
-	}
-
-	// Make the "Add new Gallery item" button full-width (so it always appears
-	// below other items).
-	.blocks-gallery-item {
-		&.has-add-item-button {
-			width: 100%;
-		}
-	}
-
 	// Apply max-width to floated items that have no intrinsic width
 	[data-align='left'] &,
 	[data-align='right'] &,
 	&.alignleft,
 	&.alignright {
-		max-width: (
-			610px / 2
-		); // $content-width: 610px; // For the visual width, subtract 30px (2 * $block-padding + 2px borders). This comes to 580px, which is optimized for 70 characters.
+		max-width: ( $tiled-gallery-content-width / 2 );
 		width: 100%;
 	}
 }
