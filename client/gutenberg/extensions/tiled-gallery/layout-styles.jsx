@@ -9,7 +9,7 @@ import { select } from '@wordpress/data';
 /**
  * Internal dependencies
  */
-import { masonryLayout, circlesLayout, squaresLayout } from './layouts';
+import { rectangularLayout, squareLayout, circleLayout, columnsLayout } from './layouts';
 
 class LayoutStyles extends Component {
 	render() {
@@ -30,15 +30,17 @@ class LayoutStyles extends Component {
 		let rows = [];
 
 		switch ( layout ) {
-			case 'masonry':
-				rows = masonryLayout( layoutOptions );
+			case 'rectangular':
+				rows = rectangularLayout( layoutOptions );
 				break;
-			case 'circles':
-				rows = circlesLayout( layoutOptions );
+			case 'square':
+				rows = squareLayout( layoutOptions );
 				break;
-			case 'squares':
-			default:
-				rows = squaresLayout( layoutOptions );
+			case 'circle':
+				rows = circleLayout( layoutOptions );
+				break;
+			case 'columns':
+				rows = columnsLayout( layoutOptions );
 		}
 
 		let styles = '';

@@ -67,7 +67,7 @@ const blockAttributes = {
 	},
 	layout: {
 		type: 'string',
-		default: 'squares',
+		default: 'rectangular',
 	},
 	linkTo: {
 		type: 'string',

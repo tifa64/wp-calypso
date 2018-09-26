@@ -231,9 +231,22 @@ class TiledGalleryEdit extends Component {
 							label="Layout"
 							selected={ layout }
 							options={ [
-								{ label: _x( 'Masonry', 'Tiled gallery layout' ), value: 'masonry' },
-								{ label: _x( 'Squares', 'Tiled gallery layout' ), value: 'squares' },
-								{ label: _x( 'Circles', 'Tiled gallery layout' ), value: 'circles' },
+								{
+									label: _x( 'Tiled Mosaic', 'Tiled gallery layout' ),
+									value: 'rectangular',
+								},
+								{
+									label: _x( 'Square Tiles', 'Tiled gallery layout' ),
+									value: 'square',
+								},
+								{
+									label: _x( 'Circles', 'Tiled gallery layout' ),
+									value: 'circle',
+								},
+								{
+									label: _x( 'Tiled Columns', 'Tiled gallery layout' ),
+									value: 'columns',
+								},
 							] }
 							onChange={ option => {
 								this.setLayout( option );

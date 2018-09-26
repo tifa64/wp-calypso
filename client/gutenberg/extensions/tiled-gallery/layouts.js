@@ -1,6 +1,6 @@
 /** @format */
 
-export const squaresLayout = options => {
+export const squareLayout = options => {
 	const { columns, margin, maxWidth, images } = options;
 
 	const imagesPerRow = columns > 1 ? columns : 1;
@@ -61,7 +61,6 @@ export const squaresLayout = options => {
 };
 
 // @TODO
-export const masonryLayout = options => squaresLayout( options );
-
-// @TODO
-export const circlesLayout = options => squaresLayout( options );
+export const rectangularLayout = options => squareLayout( options );
+export const circleLayout = options => squareLayout( options );
+export const columnsLayout = options => squareLayout( options );
