@@ -157,6 +157,20 @@ export const requestGutenbergDraftPost = ( siteId, draftId ) =>
 		{ fromApi: () => data => [ [ draftId, data ] ] }
 	);
 
+export const requestGutenbergDemoContent = draftId =>
+	requestHttpData(
+		`gutenberg-demo-content-${ draftId }`,
+		http(
+			{
+				path: `/gutenberg/demo-content`,
+				method: 'GET',
+				apiNamespace: 'wpcom/v2',
+			},
+			{}
+		),
+		{ fromApi: () => data => [ [ `gutenberg-demo-content-${ draftId }`, data ] ] }
+	);
+
 export const requestSitePost = ( siteId, postId ) =>
 	requestHttpData(
 		`gutenberg-site-${ siteId }-post-${ postId }`,
