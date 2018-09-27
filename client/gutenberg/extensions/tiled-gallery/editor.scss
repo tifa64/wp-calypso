@@ -21,7 +21,12 @@
 }
 
 .wp-block-a8c-tiled-gallery {
-	.wp-block-a8c-tiled-gallery__item {
+	&.is-style-circle .tiled-gallery__item.has-add-item-button {
+		border-radius: 0;
+		overflow: auto;
+	}
+
+	.tiled-gallery__item {
 		// Hide the focus outline that otherwise briefly appears when selecting a block.
 		figure:not( .is-selected ):focus {
 			outline: none;
@@ -32,6 +37,7 @@
 		}
 
 		/*
+		// @TODO Import animation from Calypso
 		&.is-transient img {
 			@include loading_fade;
 		}

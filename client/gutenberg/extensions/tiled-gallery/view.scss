@@ -11,7 +11,7 @@
 	// Allow gallery items to go edge to edge.
 	margin: 0 -$tiled-gallery-margin 0 -$tiled-gallery-margin;
 
-	.wp-block-a8c-tiled-gallery__item {
+	.tiled-gallery__item {
 		margin: $tiled-gallery-margin;
 		display: flex;
 		flex-grow: 1;
@@ -70,14 +70,13 @@
 		}
 	}
 
-	// @TODO `.has-add-item-button` belongs to editor side
-	&.layout-circle .wp-block-a8c-tiled-gallery__item:not( .has-add-item-button ) {
+	&.is-style-circle .tiled-gallery__item {
 		border-radius: 50%;
 		overflow: hidden;
 	}
 
 	// Cropped
-	&.is-cropped .wp-block-a8c-tiled-gallery__item {
+	&.is-cropped .tiled-gallery__item {
 		a,
 		img {
 			// IE11 doesn't support object-fit, so just make sure images aren't skewed.

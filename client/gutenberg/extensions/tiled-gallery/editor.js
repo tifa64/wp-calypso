@@ -10,7 +10,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { registerBlockType } from '@wordpress/blocks';
+import { registerBlockStyle, registerBlockType } from '@wordpress/blocks';
 // import { createBlock, registerBlockType } from '@wordpress/blocks';
 // import { RichText, mediaUpload } from '@wordpress/editor';
 // import { createBlobURL } from '@wordpress/blob';
@@ -19,7 +19,7 @@ import { registerBlockType } from '@wordpress/blocks';
  * Internal dependencies
  */
 import './editor.scss';
-import { DEFAULT_GALLERY_LAYOUT } from './constants';
+import { LAYOUTS } from './constants';
 import { default as edit } from './edit';
 import { default as save } from './save';
 
@@ -28,7 +28,7 @@ const blockAttributes = {
 		type: 'array',
 		default: [],
 		source: 'query',
-		selector: 'ul.wp-block-a8c-tiled-gallery .wp-block-a8c-tiled-gallery__item',
+		selector: 'ul.wp-block-a8c-tiled-gallery .tiled-gallery__item',
 		query: {
 			url: {
 				source: 'attribute',
@@ -65,10 +65,6 @@ const blockAttributes = {
 	imageCrop: {
 		type: 'boolean',
 		default: true,
-	},
-	layout: {
-		type: 'string',
-		default: DEFAULT_GALLERY_LAYOUT,
 	},
 	linkTo: {
 		type: 'string',
@@ -181,5 +177,9 @@ const blockSettings = {
 	edit,
 	save,
 };
+
+LAYOUTS.forEach( layout => {
+	registerBlockStyle( blockName, layout );
+} );
 
 registerBlockType( blockName, blockSettings );

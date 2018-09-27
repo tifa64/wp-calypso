@@ -50,6 +50,7 @@
     "@wordpress/keycodes": "2.0.0",
     "@wordpress/nux": "2.0.0",
     "@wordpress/plugins": "2.0.0",
+    "@wordpress/token-list": "1.0.0",
     "@wordpress/url": "2.0.0",
     "@wordpress/viewport": "2.0.0",
     "autoprefixer": "9.1.5",

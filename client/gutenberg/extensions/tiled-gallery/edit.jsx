@@ -6,8 +6,9 @@
 import classnames from 'classnames';
 import filter from 'lodash/filter';
 import pick from 'lodash/pick';
+import find from 'lodash/find';
 import { Component, Fragment } from '@wordpress/element';
-import { _x, __ } from '@wordpress/i18n';
+import { __ } from '@wordpress/i18n';
 import {
 	DropZone,
 	FormFileUpload,
@@ -27,17 +28,49 @@ import {
 	mediaUpload,
 	MediaUpload,
 } from '@wordpress/editor';
+import TokenList from '@wordpress/token-list';
 
 /**
  * Internal dependencies
  */
-import { DEFAULT_GALLERY_LAYOUT, MAX_COLUMNS, DEFAULT_COLUMNS } from './constants';
+import { LAYOUTS, MAX_COLUMNS, DEFAULT_COLUMNS } from './constants';
 import GalleryImage from './gallery-image';
 import LayoutStyles from './layout-styles';
 
 export function defaultColumnsNumber( attributes ) {
 	return Math.min( DEFAULT_COLUMNS, attributes.images.length );
 }
+
+/**
+ * Returns the active style from the given className.
+ *
+ * @param {Array} styles Block style variations.
+ * @param {string} className  Class name
+ *
+ * @return {Object?} The active style.
+ *
+ * From https://github.com/WordPress/gutenberg/blob/077f6c4eb9ba061bc00d5f3ae956d4789a291fb5/packages/editor/src/components/block-styles/index.js#L21-L43
+ */
+function getActiveStyle( styles, className ) {
+	for ( const style of new TokenList( className ).values() ) {
+		if ( style.indexOf( 'is-style-' ) === -1 ) {
+			continue;
+		}
+
+		const potentialStyleName = style.substring( 9 );
+		const activeStyle = find( styles, { name: potentialStyleName } );
+		if ( activeStyle ) {
+			return activeStyle;
+		}
+	}
+
+	return find( styles, 'isDefault' );
+}
+
+const getActiveStyleName = className => {
+	const activeStyle = getActiveStyle( LAYOUTS, className );
+	return activeStyle.name;
+};
 
 class TiledGalleryEdit extends Component {
 	constructor() {
@@ -56,6 +89,7 @@ class TiledGalleryEdit extends Component {
 
 		this.state = {
 			selectedImage: null,
+			layout: getActiveStyleName( arguments[ 0 ].className ),
 		};
 	}
 
@@ -88,7 +122,9 @@ class TiledGalleryEdit extends Component {
 	}
 
 	setLayout( value ) {
-		this.props.setAttributes( { layout: value } );
+		this.setState( {
+			layout: value,
+		} );
 	}
 
 	setLinkTo( value ) {
@@ -155,6 +191,14 @@ class TiledGalleryEdit extends Component {
 				captionSelected: false,
 			} );
 		}
+
+		if ( this.props.className !== prevProps.className ) {
+			const activeStyleName = getActiveStyleName( this.props.className );
+
+			if ( activeStyleName !== this.state.layout ) {
+				this.setLayout( activeStyleName );
+			}
+		}
 	}
 
 	render() {
@@ -164,7 +208,6 @@ class TiledGalleryEdit extends Component {
 			columns = defaultColumnsNumber( attributes ),
 			align,
 			imageCrop,
-			layout,
 			linkTo,
 		} = attributes;
 
@@ -223,25 +266,12 @@ class TiledGalleryEdit extends Component {
 					<PanelBody title={ __( 'Gallery Settings' ) }>
 						<RadioControl
 							label="Layout"
-							selected={ layout || DEFAULT_GALLERY_LAYOUT }
-							options={ [
-								{
-									label: _x( 'Tiled mosaic', 'Tiled gallery layout' ),
-									value: 'rectangular',
-								},
-								{
-									label: _x( 'Square tiles', 'Tiled gallery layout' ),
-									value: 'square',
-								},
-								{
-									label: _x( 'Circles', 'Tiled gallery layout' ),
-									value: 'circle',
-								},
-								{
-									label: _x( 'Tiled columns', 'Tiled gallery layout' ),
-									value: 'columns',
-								},
-							] }
+							selected={ this.state.layout }
+							options={ LAYOUTS.map( option => ( {
+								label: option.label,
+								value: option.name,
+								disabled: true,
+							} ) ) }
 							onChange={ option => {
 								this.setLayout( option );
 							} }
@@ -275,13 +305,13 @@ class TiledGalleryEdit extends Component {
 				</InspectorControls>
 				{ noticeUI }
 				<LayoutStyles
-					layout={ layout }
+					layout={ this.state.layout }
 					columns={ columns }
 					images={ images }
 					className={ className }
 				/>
 				<ul
-					className={ classnames( className, `layout-${ layout }`, {
+					className={ classnames( className, {
 						'is-cropped': imageCrop,
 						[ `align${ align }` ]: align,
 						[ `columns-${ columns }` ]: columns,
@@ -291,7 +321,7 @@ class TiledGalleryEdit extends Component {
 					{ images.map( ( img, index ) => {
 						return (
 							<li
-								className={ `${ className }__item ${ className }__item-${ index }` }
+								className={ `tiled-gallery__item tiled-gallery__item-${ index }` }
 								key={ img.id || img.url }
 							>
 								<GalleryImage
@@ -308,7 +338,7 @@ class TiledGalleryEdit extends Component {
 						);
 					} ) }
 					{ isSelected && (
-						<li className={ `${ className }__item has-add-item-button` }>
+						<li className={ `tiled-gallery__item has-add-item-button` }>
 							<FormFileUpload
 								multiple
 								isLarge

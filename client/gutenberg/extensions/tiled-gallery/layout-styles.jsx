@@ -47,6 +47,9 @@ class LayoutStyles extends Component {
 
 		let styles = '';
 		let nth = 0;
+		// Generated className might contain style classes (`is-style-*`)
+		// This picks up the true wrapper class
+		const wrapperClass = `.${ className.split( ' ' )[ 0 ] }`;
 
 		// @TODO get rid of "rows"
 		rows.forEach( row => {
@@ -57,7 +60,7 @@ class LayoutStyles extends Component {
 					// .${ className } .blocks-gallery-item:nth-child(${ nth++ }) {
 					// @TODO media-queries
 					return `
-					.${ className }__item-${ nth++ } {
+					${ wrapperClass } .tiled-gallery__item-${ nth++ } {
 						width: ${ image.width }px;
 						height: ${ image.height }px;
 					}
