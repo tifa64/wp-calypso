@@ -7,8 +7,9 @@
 import PropTypes from 'prop-types';
 import { localize } from 'i18n-calypso';
 import React from 'react';
+import { connect } from 'react-redux';
 import classNames from 'classnames';
-import { flowRight, includes, noop } from 'lodash';
+import { get, flow, flowRight, includes, noop } from 'lodash';
 import Gridicon from 'gridicons';
 
 /**
@@ -20,6 +21,7 @@ import Button from 'components/forms/form-button';
 import DropZone from 'components/drop-zone';
 import ProgressBar from 'components/progress-bar';
 import { connectDispatcher } from './dispatcher-converter';
+import { getImporterOption } from 'state/ui/importers/selectors';
 
 class UploadingPane extends React.PureComponent {
 	static displayName = 'SiteSettingsUploadingPane';
@@ -28,8 +30,7 @@ class UploadingPane extends React.PureComponent {
 		description: PropTypes.oneOfType( [ PropTypes.node, PropTypes.string ] ),
 		importerStatus: PropTypes.shape( {
 			filename: PropTypes.string,
-			importerState: PropTypes.string.isRequired,
-			percentComplete: PropTypes.number,
+			importerState: PropTypes.string,
 		} ),
 	};
 
@@ -40,27 +41,31 @@ class UploadingPane extends React.PureComponent {
 	}
 
 	getMessage = () => {
+		const { isUploading, uploadPercent = 0 } = this.props;
 		const { importerState, percentComplete = 0, filename } = this.props.importerStatus;
 
-		switch ( importerState ) {
+		// when isUploading is true, set importerStage to UPLOADING
+		// this is just a bit of a convenience - otherwise we would need to
+		// duplicate the UPLOADING case for when isUploading is true
+		const importerStage = isUploading
+			? appStates.UPLOADING
+			: importerState;
+
+		switch ( importerStage ) {
 			case appStates.READY_FOR_UPLOAD:
 			case appStates.UPLOAD_FAILURE:
+			case undefined:
 				return <p>{ this.props.translate( 'Drag a file here, or click to upload a file' ) }</p>;
 
-			case appStates.UPLOADING:
-				let uploadPercent = percentComplete,
-					progressClasses = classNames( 'importer__upload-progress', {
-						'is-complete': uploadPercent > 95,
-					} ),
-					uploaderPrompt;
-
-				if ( uploadPercent < 99 ) {
-					uploaderPrompt = this.props.translate( 'Uploading %(filename)s\u2026', {
+			case appStates.UPLOADING: {
+				const progressClasses = classNames( 'importer__upload-progress', {
+					'is-complete': uploadPercent > 95,
+				} );
+				const uploaderPrompt = uploadPercent < 99
+					? this.props.translate( 'Uploading %(filename)s\u2026', {
 						args: { filename },
-					} );
-				} else {
-					uploaderPrompt = this.props.translate( 'Processing uploaded file\u2026' );
-				}
+					} )
+					: this.props.translate( 'Processing uploaded file\u2026' );
 
 				return (
 					<div>
@@ -68,7 +73,7 @@ class UploadingPane extends React.PureComponent {
 						<ProgressBar className={ progressClasses } value={ uploadPercent } total={ 100 } />
 					</div>
 				);
-
+			}
 			case appStates.UPLOAD_SUCCESS:
 				return (
 					<div>
@@ -98,10 +103,15 @@ class UploadingPane extends React.PureComponent {
 	};
 
 	isReadyForImport = () => {
+		const { isUploading } = this.props;
 		const { importerState } = this.props.importerStatus;
 		const { READY_FOR_UPLOAD, UPLOAD_FAILURE } = appStates;
 
-		return includes( [ READY_FOR_UPLOAD, UPLOAD_FAILURE ], importerState );
+		if ( isUploading ) {
+			return false;
+		}
+
+		return ! importerState || includes( [ READY_FOR_UPLOAD, UPLOAD_FAILURE ], importerState );
 	};
 
 	openFileSelector = () => {
@@ -111,7 +121,14 @@ class UploadingPane extends React.PureComponent {
 	};
 
 	startUpload = file => {
-		const { startUpload } = this.props;
+		const { importerOption, startUpload } = this.props;
+
+		// Make sure we have type,
+		// either from importerOption or importerStatus (preferred)
+		const importerData = {
+			type: importerOption,
+			...this.props.importerStatus,
+		};
 
 		if ( window.chrome && window.chrome.webstore ) {
 			/**
@@ -125,9 +142,9 @@ class UploadingPane extends React.PureComponent {
 			 * @see https://bugs.chromium.org/p/chromium/issues/detail?id=631877
 			 */
 			const newFile = new File( [ file.slice( 0, file.size ) ], file.name, { type: file.type } );
-			startUpload( this.props.importerStatus, newFile );
+			startUpload( importerData, newFile );
 		} else {
-			startUpload( this.props.importerStatus, file );
+			startUpload( importerData, file );
 		}
 	};
 
@@ -165,4 +182,12 @@ const mapDispatchToProps = dispatch => ( {
 	),
 } );
 
-export default connectDispatcher( null, mapDispatchToProps )( localize( UploadingPane ) );
+export default flow(
+	connect( state => ( {
+		importerOption: getImporterOption( state ),
+		isUploading: get( state, 'imports.uploads.inProgress' ),
+		uploadPercent: get( state, 'imports.uploads.percentComplete' ),
+	} ) ),
+	connectDispatcher( null, mapDispatchToProps ),
+	localize
+)( UploadingPane );

@@ -27,13 +27,11 @@ class ImporterSiteImporter extends React.PureComponent {
 
 	static propTypes = {
 		importerStatus: PropTypes.shape( {
-			filename: PropTypes.string,
-			importerState: PropTypes.string.isRequired,
+			importerState: PropTypes.string,
 			errorData: PropTypes.shape( {
 				type: PropTypes.string.isRequired,
 				description: PropTypes.string.isRequired,
 			} ),
-			percentComplete: PropTypes.number,
 			siteTitle: PropTypes.string.isRequired,
 			statusMessage: PropTypes.string,
 		} ),

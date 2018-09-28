@@ -22,7 +22,6 @@ import {
 	IMPORTS_IMPORT_LOCK,
 	IMPORTS_IMPORT_RECEIVE,
 	IMPORTS_IMPORT_RESET,
-	IMPORTS_IMPORT_START,
 	IMPORTS_IMPORT_UNLOCK,
 	IMPORTS_START_IMPORTING,
 	IMPORTS_UPLOAD_FAILED,
@@ -32,8 +31,7 @@ import {
 } from 'state/action-types';
 import { appStates } from 'state/imports/constants';
 import { fromApi, toApi } from './common';
-
-const ID_GENERATOR_PREFIX = 'local-generated-id-';
+import { reduxDispatch } from 'lib/redux-bridge';
 
 /*
  * The following `order` functions prepare objects that can be
@@ -84,6 +82,10 @@ function receiveImporterStatus( importerStatus ) {
 }
 
 export function cancelImport( siteId, importerId ) {
+	if ( ! importerId ) {
+		return;
+	}
+
 	lockImport( importerId );
 
 	Dispatcher.handleViewAction( {
@@ -91,12 +93,6 @@ export function cancelImport( siteId, importerId ) {
 		importerId,
 		siteId,
 	} );
-
-	// Bail if this is merely a local importer object because
-	// there is nothing on the server-side to cancel
-	if ( includes( importerId, ID_GENERATOR_PREFIX ) ) {
-		return;
-	}
 
 	apiStart();
 	wpcom
@@ -173,18 +169,6 @@ export const setUploadProgress = ( importerId, data ) => ( {
 	importerId,
 } );
 
-export const startImport = ( siteId, importerType ) => {
-	// Use a fake ID until the server returns the real one
-	const importerId = `${ ID_GENERATOR_PREFIX }${ Math.round( Math.random() * 10000 ) }`;
-
-	return {
-		type: IMPORTS_IMPORT_START,
-		importerId,
-		importerType,
-		siteId,
-	};
-};
-
 export function startImporting( importerStatus ) {
 	const {
 		importerId,
@@ -207,39 +191,45 @@ export const startUpload = ( importerStatus, file ) => dispatch => {
 		site: { ID: siteId },
 	} = importerStatus;
 
+	const startUploadAction = ( {
+		type: IMPORTS_UPLOAD_START,
+		filename: file.name,
+		importerId,
+	} );
+	dispatch( startUploadAction );
+	reduxDispatch( startUploadAction );
+
 	wpcom
 		.uploadExportFile( siteId, {
 			importStatus: toApi( importerStatus ),
 			file,
 
-			onprogress: event =>
-				dispatch(
-					setUploadProgress( importerId, {
-						uploadLoaded: event.loaded,
-						uploadTotal: event.total,
-					} )
-				),
+			onprogress: event => {
+				const uploadProgressAction = setUploadProgress( importerId, {
+					uploadLoaded: event.loaded,
+					uploadTotal: event.total,
+				} );
 
-			onabort: () => cancelImport( siteId, importerId ),
+				dispatch( uploadProgressAction );
+				reduxDispatch( uploadProgressAction );
+			},
+			onabort: () => {
+				// TODO: handle aborting the upload
+				cancelImport( siteId, importerId );
+			},
 		} )
 		.then( data => Object.assign( data, { siteId } ) )
 		.then( fromApi )
-		.then(
-			flowRight(
-				dispatch,
-				finishUpload( importerId )
-			)
-		)
-		.catch(
-			flowRight(
-				dispatch,
-				failUpload( importerId )
-			)
-		);
+		.then( importerStatus => {
+			const finishUploadAction = finishUpload( importerId )( importerStatus );
 
-	dispatch( {
-		type: IMPORTS_UPLOAD_START,
-		filename: file.name,
-		importerId,
-	} );
+			dispatch( finishUploadAction )
+			reduxDispatch( finishUploadAction );
+		} )
+		.catch( error => {
+			const failUploadAction = failUpload( importerId )( error );
+
+			dispatch( failUploadAction )
+			reduxDispatch( failUploadAction );
+		} );
 };

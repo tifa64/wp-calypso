@@ -7,7 +7,7 @@
 import PropTypes from 'prop-types';
 import { localize } from 'i18n-calypso';
 import React from 'react';
-import { includes } from 'lodash';
+import { get, includes } from 'lodash';
 import { connect } from 'react-redux';
 
 /**
@@ -41,8 +41,8 @@ class ImporterHeader extends React.PureComponent {
 
 	static propTypes = {
 		importerStatus: PropTypes.shape( {
-			importerState: PropTypes.string.isRequired,
-			type: PropTypes.string.isRequired,
+			importerState: PropTypes.string,
+			type: PropTypes.string,
 		} ),
 		description: PropTypes.string.isRequired,
 		icon: PropTypes.string.isRequired,
@@ -51,9 +51,9 @@ class ImporterHeader extends React.PureComponent {
 	};
 
 	getButtonComponent() {
-		const { importerState } = this.props.importerStatus;
+		const { importerState, isUploading } = this.props.importerStatus;
 
-		if ( includes( cancelStates, importerState ) ) {
+		if ( isUploading || includes( cancelStates, importerState ) ) {
 			return CloseButton;
 		} else if ( includes( stopStates, importerState ) ) {
 			return StopButton;
@@ -63,7 +63,7 @@ class ImporterHeader extends React.PureComponent {
 			return DoneButton;
 		}
 
-		return null;
+		return CloseButton;
 	}
 
 	render() {
@@ -88,6 +88,8 @@ class ImporterHeader extends React.PureComponent {
 }
 
 export default connect(
-	null,
+	state => ( {
+		isUploading: get( state, 'imports.uploads.inProgress' ),
+	} ),
 	{ recordTracksEvent }
 )( localize( ImporterHeader ) );
