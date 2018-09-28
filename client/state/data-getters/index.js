@@ -157,9 +157,9 @@ export const requestGutenbergDraftPost = ( siteId, draftId ) =>
 		{ fromApi: () => data => [ [ draftId, data ] ] }
 	);
 
-export const requestGutenbergDemoContent = draftId =>
+export const requestGutenbergDemoContent = () =>
 	requestHttpData(
-		`gutenberg-demo-content-${ draftId }`,
+		'gutenberg-demo-content',
 		http(
 			{
 				path: `/gutenberg/demo-content`,
@@ -168,7 +168,7 @@ export const requestGutenbergDemoContent = draftId =>
 			},
 			{}
 		),
-		{ fromApi: () => data => [ [ `gutenberg-demo-content-${ draftId }`, data ] ] }
+		{ fromApi: () => data => [ [ 'gutenberg-demo-content', data ] ] }
 	);
 
 export const requestSitePost = ( siteId, postId ) =>

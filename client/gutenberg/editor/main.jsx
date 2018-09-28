@@ -76,9 +76,7 @@ const getPost = ( siteId, postId ) => {
 const mapStateToProps = ( state, { siteId, postId, uniqueDraftKey, isDemoContent } ) => {
 	const draftPostId = get( getHttpData( uniqueDraftKey ), 'data.ID', null );
 	const post = getPost( siteId, postId || draftPostId );
-	const demoContent = isDemoContent
-		? get( requestGutenbergDemoContent( uniqueDraftKey ), 'data' )
-		: null;
+	const demoContent = isDemoContent ? get( requestGutenbergDemoContent(), 'data' ) : null;
 	const isAutoDraft = 'auto-draft' === get( post, 'status', null );
 
 	let overridePost = null;
