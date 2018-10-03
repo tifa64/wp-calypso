@@ -11,6 +11,7 @@ import blogStickers from './blog-stickers';
 import commentCounts from './comment-counts';
 import comments from './comments';
 import commentsTree from './comments-tree';
+import exports from './exports';
 import jitm from './jitm';
 import media from './media';
 import memberships from './memberships';
@@ -32,6 +33,7 @@ registerHandlers(
 		commentCounts,
 		comments,
 		commentsTree,
+		exports,
 		config.isEnabled( 'jitms' ) ? jitm : null,
 		media,
 		config.isEnabled( 'memberships' ) ? memberships : null,
