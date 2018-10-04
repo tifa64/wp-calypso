@@ -22,6 +22,7 @@ import {
 	READER_EXPAND_COMMENTS,
 } from 'state/action-types';
 import { NUMBER_OF_COMMENTS_PER_FETCH } from './constants';
+import getSiteComment from 'state/selectors/get-site-comment';
 
 /**
  * Creates an action that requests a single comment for a given site.
@@ -154,19 +155,27 @@ export const deleteComment = (
 	commentId,
 	options = { showSuccessNotice: true },
 	refreshCommentListQuery = null
-) => ( {
-	type: COMMENTS_DELETE,
-	siteId,
-	postId,
-	commentId,
-	options,
-	refreshCommentListQuery,
-	meta: {
-		dataLayer: {
-			trackRequest: true,
+) => ( dispatch, getState ) => {
+	const siteComment = getSiteComment( getState(), siteId, commentId );
+	const previousStatus = siteComment && siteComment.status;
+
+	dispatch( {
+		type: COMMENTS_DELETE,
+		siteId,
+		postId,
+		commentId,
+		options,
+		refreshCommentListQuery,
+		meta: {
+			comment: {
+				previousStatus,
+			},
+			dataLayer: {
+				trackRequest: true,
+			},
 		},
-	},
-} );
+	} );
+};
 
 /***
  * Creates a write comment action for a siteId and postId
@@ -249,19 +258,27 @@ export const changeCommentStatus = (
 	commentId,
 	status,
 	refreshCommentListQuery = null
-) => ( {
-	type: COMMENTS_CHANGE_STATUS,
-	siteId,
-	postId,
-	commentId,
-	status,
-	refreshCommentListQuery,
-	meta: {
-		dataLayer: {
-			trackRequest: true,
+) => ( dispatch, getState ) => {
+	const siteComment = getSiteComment( getState(), siteId, commentId );
+	const previousStatus = siteComment && siteComment.status;
+
+	dispatch( {
+		type: COMMENTS_CHANGE_STATUS,
+		siteId,
+		postId,
+		commentId,
+		status,
+		refreshCommentListQuery,
+		meta: {
+			comment: {
+				previousStatus,
+			},
+			dataLayer: {
+				trackRequest: true,
+			},
 		},
-	},
-} );
+	} );
+};
 
 /**
  * @typedef {Object} Comment
