@@ -1,5 +1,6 @@
+/** @format */
 import { mergeHandlers } from '../utils';
 
 import readStatus from './read-status';
 
-export default mergeHandlers(readStatus);
+export default mergeHandlers( readStatus );
