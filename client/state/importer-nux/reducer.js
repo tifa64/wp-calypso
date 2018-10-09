@@ -35,7 +35,7 @@ export const siteDetails = createReducer(
 export const error = createReducer( null, {
 	[ IMPORT_IS_SITE_IMPORTABLE_START_FETCH ]: () => null,
 	[ IMPORT_IS_SITE_IMPORTABLE_RECEIVE ]: () => null,
-	[ IMPORT_IS_SITE_IMPORTABLE_ERROR ]: ( _state, action ) => action.error,
+	[ IMPORT_IS_SITE_IMPORTABLE_ERROR ]: ( state, action ) => action.error,
 } );
 
 export default combineReducers( {

@@ -26,11 +26,6 @@ import {
 } from 'state/importer-nux/temp-selectors';
 import { validateImportUrl } from '../../../my-sites/importer/site-importer/url-validation';
 
-// const normalizeUrlForImportSource = url => {
-// 	// @TODO sanitize? Prepend https:// ..?
-// 	return url;
-// };
-
 class ImportURLStepComponent extends Component {
 	state = {
 		// Url message could be client-side validation or server-side error.
@@ -169,7 +164,9 @@ class ImportURLStepComponent extends Component {
 
 	render() {
 		const { flowName, isLoading, positionInFlow, signupProgress, stepName, translate } = this.props;
-		const noticeText = translate( "Please wait, we're checking this URL." );
+		const noticeText = translate(
+			"Please wait, we're checking to see if we can import this site."
+		);
 
 		return (
 			<div>
