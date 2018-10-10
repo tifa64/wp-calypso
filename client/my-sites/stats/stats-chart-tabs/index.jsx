@@ -255,11 +255,16 @@ class StatModuleChartTabs extends Component {
 	}
 }
 
+const noSiteState = {
+	siteId: null,
+	data: [],
+};
+
 const connectComponent = connect(
 	( state, { period: { period }, chartTab, queryDate } ) => {
 		const siteId = getSelectedSiteId( state );
 		if ( ! siteId ) {
-			return { siteId, data: [] };
+			return noSiteState;
 		}
 
 		const quantity = 'year' === period ? 10 : 30;
