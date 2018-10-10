@@ -6,7 +6,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { find, flowRight } from 'lodash';
+import { flowRight } from 'lodash';
 import { connect } from 'react-redux';
 import { localize } from 'i18n-calypso';
 
@@ -27,7 +27,7 @@ import {
 } from 'state/stats/lists/selectors';
 import { recordGoogleEvent } from 'state/analytics/actions';
 import { getSiteOption } from 'state/sites/selectors';
-import { formatDate, getQueryDate } from './utility';
+import { formatDate, getQueryDate, getActiveTab } from './utility';
 
 class StatModuleChartTabs extends Component {
 	static propTypes = {
@@ -51,17 +51,13 @@ class StatModuleChartTabs extends Component {
 	};
 
 	static getDerivedStateFromProps( props, state ) {
-		const activeTab = StatModuleChartTabs.getActiveTab( props );
-		const activeLegendCharts = activeTab.legendOptions ? activeTab.legendOptions.slice() : [];
+		const activeTab = getActiveTab( props );
 
 		if ( activeTab !== state.activeTab ) {
+			const activeLegendCharts = activeTab.legendOptions ? activeTab.legendOptions.slice() : [];
 			return { activeLegendCharts, activeTab };
 		}
 		return null;
-	}
-
-	static getActiveTab( props ) {
-		return find( props.charts, { attr: props.chartTab } ) || props.charts[ 0 ];
 	}
 
 	buildTooltipData( item ) {

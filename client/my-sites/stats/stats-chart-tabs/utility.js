@@ -4,6 +4,7 @@
  * External dependencies
  */
 import moment from 'moment';
+import { find, memoize } from 'lodash';
 
 /**
  * Internal dependencies
@@ -38,3 +39,9 @@ export function getQueryDate( queryDate, timezoneOffset, period, quantity ) {
 	}
 	return endOfPeriodDate;
 }
+
+function getActiveTabUnmemoized( { charts, chartTab } ) {
+	return find( charts, { attr: chartTab } ) || charts[ 0 ];
+}
+
+export const getActiveTab = memoize( getActiveTabUnmemoized );
