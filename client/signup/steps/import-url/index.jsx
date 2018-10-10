@@ -2,7 +2,7 @@
 /**
  * External dependencies
  */
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { localize } from 'i18n-calypso';
 import { connect } from 'react-redux';
 import { flow, isEqual } from 'lodash';
@@ -137,41 +137,15 @@ class ImportURLStepComponent extends Component {
 		const { isLoading, urlInputValue, translate } = this.props;
 		const { showUrlMessage } = this.state;
 		const urlMessage = this.getUrlMessage();
-
-		return (
-			<Card className="import-url__wrapper site-importer__site-importer-pane" tagName="div">
-				<form
-					className="import-url__form site-importer__site-importer-url-input"
-					onSubmit={ this.handleSubmit }
-				>
-					<FormTextInput
-						placeholder="https://example.wixsite.com/mysite"
-						disabled={ isLoading }
-						defaultValue={ urlInputValue }
-						onChange={ this.handleInputChange }
-						onBlur={ this.handleInputBlur }
-						inputRef={ this.handleInputRef }
-					/>
-					<FormButton disabled={ isLoading } busy={ isLoading } type="submit">
-						{ translate( 'Continue' ) }
-					</FormButton>
-				</form>
-				{ showUrlMessage &&
-					urlMessage && <FormInputValidation text={ urlMessage } isError={ !! urlMessage } /> }
-			</Card>
-		);
-	};
-
-	render() {
-		const { flowName, isLoading, positionInFlow, signupProgress, stepName, translate } = this.props;
 		const noticeText = translate(
 			"Please wait, we're checking to see if we can import this site."
 		);
 
 		return (
-			<div>
+			<Fragment>
 				{ isLoading && (
 					<Notice
+						className="import-url__notice"
 						status="is-info"
 						icon="info"
 						isLoading={ true }
@@ -180,18 +154,46 @@ class ImportURLStepComponent extends Component {
 						isCompact={ true }
 					/>
 				) }
-				<StepWrapper
-					flowName={ flowName }
-					stepName={ stepName }
-					positionInFlow={ positionInFlow }
-					headerText={ translate( 'Where can we find your old site?' ) }
-					subHeaderText={ translate(
-						"Enter your Wix site's URL, sometimes called a domain name or site address."
-					) }
-					signupProgress={ signupProgress }
-					stepContent={ this.renderContent() }
-				/>
-			</div>
+				<Card className="import-url__wrapper site-importer__site-importer-pane" tagName="div">
+					<form
+						className="import-url__form site-importer__site-importer-url-input"
+						onSubmit={ this.handleSubmit }
+					>
+						<FormTextInput
+							placeholder="https://example.wixsite.com/mysite"
+							disabled={ isLoading }
+							defaultValue={ urlInputValue }
+							onChange={ this.handleInputChange }
+							onBlur={ this.handleInputBlur }
+							inputRef={ this.handleInputRef }
+						/>
+						<FormButton disabled={ isLoading } busy={ isLoading } type="submit">
+							{ translate( 'Continue' ) }
+						</FormButton>
+					</form>
+					{ showUrlMessage &&
+						urlMessage && <FormInputValidation text={ urlMessage } isError={ !! urlMessage } /> }
+				</Card>
+			</Fragment>
+		);
+	};
+
+	render() {
+		const { flowName, positionInFlow, signupProgress, stepName, translate } = this.props;
+
+		return (
+			<StepWrapper
+				className="import-url"
+				flowName={ flowName }
+				stepName={ stepName }
+				positionInFlow={ positionInFlow }
+				headerText={ translate( 'Where can we find your old site?' ) }
+				subHeaderText={ translate(
+					"Enter your Wix site's URL, sometimes called a domain name or site address."
+				) }
+				signupProgress={ signupProgress }
+				stepContent={ this.renderContent() }
+			/>
 		);
 	}
 }

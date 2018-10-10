@@ -1,0 +1,19 @@
+/** @format */
+
+.import-url {
+	position: relative;
+}
+
+.import-url__notice {
+	position: absolute;
+	top: -70px;
+	right: 0;
+}
+
+.flow-progress-indicator__import {
+	margin-top: 30px;
+
+	.signup__step {
+		overflow: visible;
+	}
+}

@@ -517,7 +517,7 @@ class Signup extends React.Component {
 
 		return (
 			<CSSTransition classNames="signup__step" timeout={ 400 } key={ stepKey }>
-				<div className="signup__step">
+				<div className={ `signup__step step__${ this.props.stepName }` }>
 					{ shouldRenderLocaleSuggestions && (
 						<LocaleSuggestions path={ this.props.path } locale={ this.props.locale } />
 					) }
